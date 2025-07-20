@@ -17,6 +17,10 @@ and this project adheres to
 
 ## [0.1.0] - 2025-07-20 <a id="0.1.0"></a>
 
+@Content
+
+## [0.1.0] - 2025-07-20 <a id="0.1.0"></a>
+
 ### ⚙️ Miscellaneous Tasks
 
 - Init workspace with base artifacts and main sub-crate components
