@@ -9,6 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
+@Content
+
+## [0.1.4] - 2025-07-20 <a id="0.1.4"></a>
+
 ### 🏗️ Build
 
 - [cargo] - Remove version spec in release commit message
