@@ -9,10 +9,6 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
-### 🏗️ Build
-
-- [make] - Set workspace field to false by default in all defined tasks
-
 ### ⚙️ Miscellaneous Tasks
 
-- Init repo
+- Init workspace with base artifacts and main sub-crate components
