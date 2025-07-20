@@ -1,6 +1,6 @@
 [package]
 name = "ruclif-parser"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "Ruclif component to parse CLI arguments"
 authors = ["Patacode <pata.codegineer@gmail.com>"]
