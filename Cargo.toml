@@ -7,5 +7,5 @@ members = [
 ]
 
 [workspace.metadata.release]
-pre-release-commit-message = "chore: prepare for next release"
+pre-release-commit-message = "chore: prepare for next release v0.1.2"
 tag-message = "Release {{crate_name}} version {{version}}"
