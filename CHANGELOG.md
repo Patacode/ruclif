@@ -9,16 +9,6 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
-@Content
-
-## [0.1.0] - 2025-07-20 <a id="0.1.0"></a>
-
-@Content
-
-## [0.1.0] - 2025-07-20 <a id="0.1.0"></a>
-
-@Content
-
 ## [0.1.0] - 2025-07-20 <a id="0.1.0"></a>
 
 ### ⚙️ Miscellaneous Tasks
