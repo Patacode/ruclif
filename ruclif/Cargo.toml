@@ -1,0 +1,12 @@
+[package]
+name = "ruclif"
+version = "0.1.0"
+edition = "2021"
+description = "Rust framework to create well-structured and easy-to-manage CLI tools"
+authors = ["Patacode <pata.codegineer@gmail.com>"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Patacode/ruclif"
+
+[dependencies]
+ruclif-core = { path = "../ruclif-core" }
+ruclif-parser = { path = "../ruclif-parser" }
