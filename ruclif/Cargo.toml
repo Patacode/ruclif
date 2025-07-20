@@ -10,3 +10,14 @@ repository = "https://github.com/Patacode/ruclif"
 [dependencies]
 ruclif-core = { path = "../ruclif-core" }
 ruclif-parser = { path = "../ruclif-parser" }
+
+[package.metadata.release]
+pre-release-commit-message = "chore: prepare for release v{{version}}"
+tag-message = "Release {{crate_name}} version {{version}}"
+pre-release-replacements = [
+  { file = "../README.md", search = "\\d+\\.\\d+\\.\\d+", replace = "{{version}}" },
+  { file = "../CHANGELOG.md", search = "@Unreleased", replace = "{{version}}" },
+  { file = "../CHANGELOG.md", search = "@ReleaseDate", replace = "{{date}} <a id=\"{{version}}\"></a>" },
+  { file = "../CHANGELOG.md", search = "\\[comment\\]: <> \\(@PlannedForNextRelease\\)", replace = "[comment]: <> (@PlannedForNextRelease)\n## [@Unreleased] - @ReleaseDate\n\n@Content\n" },
+  { file = "../.version", search = "\\d+\\.\\d+\\.\\d+", replace = "{{version}}" },
+]
