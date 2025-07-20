@@ -9,6 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
+@Content
+
+## [0.1.5] - 2025-07-20 <a id="0.1.5"></a>
+
 ### ⚙️ Miscellaneous Tasks
 
 - [github] - Add notify job trigger on push to main to sync codegineer repo
