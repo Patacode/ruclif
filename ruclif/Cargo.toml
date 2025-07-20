@@ -8,8 +8,8 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/Patacode/ruclif"
 
 [dependencies]
-ruclif-core = { path = "../ruclif-core" }
-ruclif-parser = { path = "../ruclif-parser" }
+ruclif-core = { path = "../ruclif-core", version = "*"}
+ruclif-parser = { path = "../ruclif-parser", version = "*"}
 
 [package.metadata.release]
 pre-release-commit-message = "chore: prepare for release v{{version}}"
