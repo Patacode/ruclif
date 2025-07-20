@@ -9,6 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
+### 🏗️ Build
+
+- [cargo] - Put pre-release-commit-message and tag-message field into workspace toml
+
 ## [0.1.0] - 2025-07-20 <a id="0.1.0"></a>
 
 ### ⚙️ Miscellaneous Tasks
