@@ -5,3 +5,7 @@ members = [
     "ruclif-core",
     "ruclif-parser",
 ]
+
+[workspace.metadata.release]
+pre-release-commit-message = "chore: prepare for release v{{version}}"
+tag-message = "Release {{crate_name}} version {{version}}"

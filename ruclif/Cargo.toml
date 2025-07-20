@@ -12,8 +12,6 @@ ruclif-core = { path = "../ruclif-core", version = "0"}
 ruclif-parser = { path = "../ruclif-parser", version = "0"}
 
 [package.metadata.release]
-pre-release-commit-message = "chore: prepare for release v{{version}}"
-tag-message = "Release {{crate_name}} version {{version}}"
 pre-release-replacements = [
   { file = "../README.md", search = "\\d+\\.\\d+\\.\\d+", replace = "{{version}}" },
   { file = "../CHANGELOG.md", search = "@Unreleased", replace = "{{version}}" },
