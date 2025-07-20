@@ -9,4 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
-@Content
+### 🏗️ Build
+
+- [make] - Set workspace field to false by default in all defined tasks
+
+### ⚙️ Miscellaneous Tasks
+
+- Init repo
