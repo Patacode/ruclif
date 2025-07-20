@@ -9,7 +9,9 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
-@Content
+### 🏗️ Build
+
+- [cargo] - Put back pre-release-commit-message option into ruclif crate
 
 ## [0.1.1] - 2025-07-20 <a id="0.1.1"></a>
 
