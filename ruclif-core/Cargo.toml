@@ -1,9 +1,9 @@
 [package]
 name = "ruclif-core"
-version = "0.1.5"
-edition = "2021"
 description = "Ruclif component containing core logic and common/shared entities"
-authors = ["Patacode <pata.codegineer@gmail.com>"]
-repository = "https://github.com/Patacode/ruclif"
 
 license.workspace = true
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+repository.workspace = true

@@ -1,12 +1,12 @@
 [package]
 name = "ruclif"
-version = "0.1.5"
-edition = "2021"
 description = "Rust framework to create well-structured and easy-to-manage CLI tools"
-authors = ["Patacode <pata.codegineer@gmail.com>"]
-repository = "https://github.com/Patacode/ruclif"
 
 license.workspace = true
+edition.workspace = true
+version.workspace = true
+authors.workspace = true
+repository.workspace = true
 
 [dependencies]
 ruclif-core = { path = "../ruclif-core", version = "0" }
