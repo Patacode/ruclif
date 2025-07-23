@@ -9,7 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
-@Content
+### ⚙️ Miscellaneous Tasks
+
+- [Cargo.toml] Put all common package config at workspace level
+- [readme] - Add crates.io badge for version and number of downloads
 
 ## [0.1.5] - 2025-07-20 <a id="0.1.5"></a>
 
