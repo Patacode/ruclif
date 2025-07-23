@@ -9,6 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
+@Content
+
+## [0.1.6] - 2025-07-23 <a id="0.1.6"></a>
+
 ### ⚙️ Miscellaneous Tasks
 
 - [Cargo.toml] Put all common package config at workspace level
