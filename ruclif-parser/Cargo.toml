@@ -4,5 +4,6 @@ version = "0.1.5"
 edition = "2021"
 description = "Ruclif component to parse CLI arguments"
 authors = ["Patacode <pata.codegineer@gmail.com>"]
-license = "MIT OR Apache-2.0"
 repository = "https://github.com/Patacode/ruclif"
+
+license.workspace = true
