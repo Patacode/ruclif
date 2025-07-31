@@ -1,3 +1,5 @@
+pub mod string;
+
 #[derive(Default, Debug)]
 struct ClapArgData<'a> {
     name: Option<&'a str>, // 16 bytes (pointer + len)
