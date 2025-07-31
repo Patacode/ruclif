@@ -2,10 +2,10 @@ use crate::ClapArgData;
 
 #[derive(Default, Debug)]
 pub struct StringClapArgData<'a> {
-    common: Option<ClapArgData<'a>>, // 72 bytes
+    common: ClapArgData<'a>, // 64 bytes
     default_value: Option<&'a str>, // 16 bytes
     value_parser: Option<fn(&str) -> Result<&str, &str>>, // 8 bytes
-} // 96 bytes
+} // 88 bytes
 
 pub struct StringClapArg<'a> {
     data: StringClapArgData<'a>
