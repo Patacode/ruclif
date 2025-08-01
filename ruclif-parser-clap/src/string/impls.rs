@@ -32,7 +32,7 @@ impl StringClapArgBuilder {
         self
     }
 
-    pub fn value_parser(mut self, value_parser: fn(&str) -> Result<&str, &str>) -> Self {
+    pub fn value_parser(mut self, value_parser: fn(&str) -> Result<String, String>) -> Self {
         self.value_parser = Some(value_parser);
         self
     }

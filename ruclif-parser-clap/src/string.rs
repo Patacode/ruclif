@@ -6,7 +6,7 @@ mod impls;
 pub struct StringClapArgData {
     common: ClapArgData, // 56 bytes
     default_value: Option<&'static str>, // 16 bytes
-    value_parser: Option<fn(&str) -> Result<&str, &str>>, // 8 bytes
+    value_parser: Option<fn(&str) -> Result<String, String>>, // 8 bytes
 } // 80 bytes
 
 #[derive(Default, Debug)]
@@ -21,5 +21,5 @@ pub struct StringClapArgBuilder {
     long: Option<&'static str>, // 16 bytes
     description: Option<&'static str>, // 16 bytes
     default_value: Option<&'static str>, // 16 bytes
-    value_parser: Option<fn(&str) -> Result<&str, &str>>, // 8 bytes
+    value_parser: Option<fn(&str) -> Result<String, String>>, // 8 bytes
 } // 80 bytes
