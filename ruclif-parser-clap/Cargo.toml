@@ -1,0 +1,13 @@
+[package]
+name = "ruclif-parser-clap"
+description = "Ruclif parser implementation around clap"
+
+license.workspace = true
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+clap = "4"
+ruclif-core = { path = "../ruclif-core", version = "0" }
