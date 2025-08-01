@@ -1,5 +1,7 @@
 use crate::ClapArgData;
 
+mod impls;
+
 #[derive(Default, Debug)]
 pub struct StringClapArgData<'a> {
     common: ClapArgData<'a>, // 64 bytes
