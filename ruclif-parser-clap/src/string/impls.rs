@@ -1,10 +1,12 @@
 use clap::{Arg, ArgMatches};
-use ruclif_core::parser::CliArg;
+use ruclif_core::{common::HasBuilder, parser::CliArg};
 
 use crate::{string::{StringClapArg, StringClapArgBuilder, StringClapArgData}, ClapArgData};
 
-impl StringClapArg {
-    pub fn builder() -> StringClapArgBuilder {
+impl HasBuilder for StringClapArg {
+    type Builder = StringClapArgBuilder;
+
+    fn builder() -> Self::Builder {
         StringClapArgBuilder::default()
     }
 }
