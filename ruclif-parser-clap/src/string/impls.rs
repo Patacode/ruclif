@@ -1,3 +1,6 @@
+use clap::{Arg, ArgMatches};
+use ruclif_core::parser::CliArg;
+
 use crate::{string::{StringClapArg, StringClapArgBuilder, StringClapArgData}, ClapArgData};
 
 impl StringClapArg {
@@ -50,5 +53,49 @@ impl StringClapArgBuilder {
         };
 
         StringClapArg { data }
+    }
+}
+
+impl StringClapArg {
+    fn name(&self) -> &'static str {
+        self.data.common.name.unwrap()
+    }
+
+    fn short(&self) -> char {
+       self.data.common.short.unwrap()
+    }
+
+    fn long(&self) -> &'static str {
+        self.data.common.long.unwrap()
+    }
+
+    fn description(&self) -> &'static str {
+        self.data.common.description.unwrap()
+    }
+
+    fn default_value(&self) -> &'static str {
+        self.data.default_value.unwrap()
+    }
+
+    fn value_parser(&self) -> fn(&str) -> Result<String, String> {
+        self.data.value_parser.unwrap()
+    }
+}
+
+impl CliArg<Arg, ArgMatches, String> for StringClapArg {
+    fn build(&self) -> Arg {
+        Arg::new(self.name())
+            .short(self.short())
+            .long(self.long())
+            .help(self.description())
+            .default_value(self.default_value())
+            .value_parser(self.value_parser())
+    }
+
+    fn convert(&self, parsing_result: &ArgMatches) -> String {
+        parsing_result
+            .get_one::<String>(self.name())
+            .unwrap()
+            .to_owned()
     }
 }
