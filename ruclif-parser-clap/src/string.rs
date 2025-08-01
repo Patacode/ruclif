@@ -17,7 +17,7 @@ pub struct StringClapArg {
     data: StringClapArgData // 80 bytes
 } // 80 bytes
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, PartialEq)]
 pub struct StringClapArgBuilder {
     name: Option<&'static str>, // 16 bytes
     short: Option<char>, // 4 bytes
