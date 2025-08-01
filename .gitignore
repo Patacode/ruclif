@@ -5,3 +5,6 @@ Cargo.lock
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
+
+### Personal ###
+NOTES.md
