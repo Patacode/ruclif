@@ -1,10 +1,6 @@
 [workspace]
 resolver = "3"
-members = [
-    "ruclif",
-    "ruclif-core",
-    "ruclif-parser",
-]
+members = ["ruclif", "ruclif-core", "ruclif-parser", "ruclif-parser-clap"]
 
 [workspace.package]
 license = "MIT OR Apache-2.0"
