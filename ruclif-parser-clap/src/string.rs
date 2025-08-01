@@ -9,10 +9,12 @@ pub struct StringClapArgData<'a> {
     value_parser: Option<fn(&str) -> Result<&str, &str>>, // 8 bytes
 } // 88 bytes
 
+#[derive(Default, Debug)]
 pub struct StringClapArg<'a> {
     data: StringClapArgData<'a>
 } // 88 bytes
 
+#[derive(Default, Debug)]
 pub struct StringClapArgBuilder<'a> {
     name: Option<&'a str>, // 16 bytes
     short: Option<&'a str>, // 16 bytes
