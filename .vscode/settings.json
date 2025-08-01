@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
+        "impls",
         "Patacode",
-        "ruclif"
+        "ruclif",
+        "speculoos"
+    ],
+    "conventionalCommits.scopes": [
+        "ruclif-parser-clap"
     ]
 }
