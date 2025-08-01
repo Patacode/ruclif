@@ -3,23 +3,25 @@ use crate::ClapArgData;
 mod impls;
 
 #[derive(Default, Debug)]
-pub struct StringClapArgData<'a> {
-    common: ClapArgData<'a>, // 64 bytes
-    default_value: Option<&'a str>, // 16 bytes
+pub struct StringClapArgData {
+    common: ClapArgData
+, // 64 bytes
+    default_value: Option<&'static str>, // 16 bytes
     value_parser: Option<fn(&str) -> Result<&str, &str>>, // 8 bytes
 } // 88 bytes
 
 #[derive(Default, Debug)]
-pub struct StringClapArg<'a> {
-    data: StringClapArgData<'a>
+pub struct StringClapArg {
+    data: StringClapArgData
+
 } // 88 bytes
 
 #[derive(Default, Debug)]
-pub struct StringClapArgBuilder<'a> {
-    name: Option<&'a str>, // 16 bytes
-    short: Option<&'a str>, // 16 bytes
-    long: Option<&'a str>, // 16 bytes
-    description: Option<&'a str>, // 16 bytes
-    default_value: Option<&'a str>, // 16 bytes
+pub struct StringClapArgBuilder {
+    name: Option<&'static str>, // 16 bytes
+    short: Option<&'static str>, // 16 bytes
+    long: Option<&'static str>, // 16 bytes
+    description: Option<&'static str>, // 16 bytes
+    default_value: Option<&'static str>, // 16 bytes
     value_parser: Option<fn(&str) -> Result<&str, &str>>, // 8 bytes
 } // 88 bytes
