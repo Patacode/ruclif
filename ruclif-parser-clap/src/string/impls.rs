@@ -1,33 +1,33 @@
 use crate::{string::{StringClapArg, StringClapArgBuilder, StringClapArgData}, ClapArgData};
 
-impl<'a> StringClapArg<'a> {
-    pub fn builder() -> StringClapArgBuilder<'a> {
+impl StringClapArg {
+    pub fn builder() -> StringClapArgBuilder {
         StringClapArgBuilder::default()
     }
 }
 
-impl<'a> StringClapArgBuilder<'a> {
-    pub fn name(mut self, name: &'a str) -> Self {
+impl StringClapArgBuilder {
+    pub fn name(mut self, name: &'static str) -> Self {
         self.name = Some(name);
         self
     }
 
-    pub fn short(mut self, short: &'a str) -> Self {
+    pub fn short(mut self, short: char) -> Self {
         self.short = Some(short);
         self
     }
 
-    pub fn long(mut self, long: &'a str) -> Self {
+    pub fn long(mut self, long: &'static str) -> Self {
         self.long = Some(long);
         self
     }
 
-    pub fn description(mut self, description: &'a str) -> Self {
+    pub fn description(mut self, description: &'static str) -> Self {
         self.description = Some(description);
         self
     }
 
-    pub fn default_value(mut self, default_value: &'a str) -> Self {
+    pub fn default_value(mut self, default_value: &'static str) -> Self {
         self.default_value = Some(default_value);
         self
     }
@@ -37,7 +37,7 @@ impl<'a> StringClapArgBuilder<'a> {
         self
     }
 
-    pub fn build(self) -> StringClapArg<'a> {
+    pub fn build(self) -> StringClapArg {
         let data = StringClapArgData {
             common: ClapArgData {
                 name: self.name,
