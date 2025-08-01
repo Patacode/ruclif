@@ -1,3 +1,2 @@
-pub struct CliArgData<T> {
-    cli_arg: T,
-}
+pub mod parser;
+pub mod common;
