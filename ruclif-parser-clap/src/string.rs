@@ -2,6 +2,9 @@ use crate::ClapArgData;
 
 mod impls;
 
+#[cfg(test)]
+mod tests;
+
 #[derive(Default, Debug)]
 pub struct StringClapArgData {
     common: ClapArgData, // 56 bytes
