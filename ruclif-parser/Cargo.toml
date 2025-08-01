@@ -7,3 +7,6 @@ edition.workspace = true
 version.workspace = true
 authors.workspace = true
 repository.workspace = true
+
+[dependencies]
+ruclif-parser-clap = { path = "../ruclif-parser-clap", version = "0" }
