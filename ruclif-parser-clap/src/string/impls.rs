@@ -1,7 +1,13 @@
 use clap::{Arg, ArgMatches};
-use ruclif_core::{builder::{Builder, HasBuilder}, parser::CliArg};
+use ruclif_core::{
+    builder::{Builder, HasBuilder},
+    common::IntoFrom,
+};
 
-use crate::{string::{StringClapArg, StringClapArgBuilder, StringClapArgData}, ClapArgData};
+use crate::{
+    string::{StringClapArg, StringClapArgBuilder, StringClapArgData},
+    ClapArgData,
+};
 
 impl HasBuilder for StringClapArg {
     type Builder = StringClapArgBuilder;
@@ -68,7 +74,7 @@ impl StringClapArg {
     }
 
     fn short(&self) -> char {
-       self.data.common.short
+        self.data.common.short
     }
 
     fn long(&self) -> &'static str {
@@ -88,8 +94,8 @@ impl StringClapArg {
     }
 }
 
-impl CliArg<Arg, ArgMatches, String> for StringClapArg {
-    fn build(&self) -> Arg {
+impl Into<Arg> for StringClapArg {
+    fn into(self) -> Arg {
         Arg::new(self.name())
             .short(self.short())
             .long(self.long())
@@ -97,8 +103,10 @@ impl CliArg<Arg, ArgMatches, String> for StringClapArg {
             .default_value(self.default_value())
             .value_parser(self.value_parser())
     }
+}
 
-    fn convert(&self, parsing_result: &ArgMatches) -> String {
+impl IntoFrom<ArgMatches, String> for StringClapArg {
+    fn into_from(self, parsing_result: &ArgMatches) -> String {
         parsing_result
             .get_one::<String>(self.name())
             .unwrap()
