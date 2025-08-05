@@ -25,4 +25,17 @@ pub struct StringClapArgBuilder {
     description: Option<&'static str>,                        // 16 bytes
     default_value: Option<&'static str>,                      // 16 bytes
     value_parser: Option<fn(&str) -> Result<String, String>>, // 8 bytes
+    state: u8,
 } // 80 bytes
+
+mod builder_state {
+    pub const NAME: usize = 0b1;
+    pub const SHORT: usize = 0b10;
+    pub const LONG: usize = 0b100;
+    pub const DESCRIPTION: usize = 0b1000;
+    pub const EXPECTED: u8 = 0b1111;
+}
+
+mod error_message {
+    pub const MANDATORY_FIELDS_MISSING: &str = "Following mandatory fields are missing: {fields}";
+}

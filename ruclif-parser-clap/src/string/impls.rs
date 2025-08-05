@@ -5,7 +5,7 @@ use ruclif_core::{
 };
 
 use crate::{
-    string::{StringClapArg, StringClapArgBuilder, StringClapArgData},
+    string::{builder_state, error_message, StringClapArg, StringClapArgBuilder, StringClapArgData},
     ClapArgData,
 };
 
@@ -20,21 +20,25 @@ impl HasBuilder for StringClapArg {
 impl StringClapArgBuilder {
     pub fn name(mut self, name: &'static str) -> Self {
         self.name = Some(name);
+        self.state |= builder_state::NAME as u8;
         self
     }
 
     pub fn short(mut self, short: char) -> Self {
         self.short = Some(short);
+        self.state |= builder_state::SHORT as u8;
         self
     }
 
     pub fn long(mut self, long: &'static str) -> Self {
         self.long = Some(long);
+        self.state |= builder_state::LONG as u8;
         self
     }
 
     pub fn description(mut self, description: &'static str) -> Self {
         self.description = Some(description);
+        self.state = self.state | builder_state::DESCRIPTION as u8;
         self
     }
 
@@ -52,19 +56,42 @@ impl StringClapArgBuilder {
 impl Builder for StringClapArgBuilder {
     type Result = StringClapArg;
 
-    fn build(self) -> StringClapArg {
-        let data = StringClapArgData {
-            common: ClapArgData {
-                name: self.name.unwrap(),
-                short: self.short.unwrap(),
-                long: self.long.unwrap(),
-                description: self.description.unwrap(),
-            },
-            default_value: self.default_value,
-            value_parser: self.value_parser,
-        };
+    fn build(self) -> Result<StringClapArg, String> {
+        if self.state != builder_state::EXPECTED {
+            let missing_states = self.state & builder_state::EXPECTED;
+            let mut missing_fields: Vec<&str> = Vec::new();
 
-        StringClapArg { data }
+            if missing_states & builder_state::NAME as u8 == 0 {
+                missing_fields.push("name");
+            }
+
+            if missing_states & builder_state::SHORT as u8 == 0 {
+                missing_fields.push("short");
+            }
+
+            if missing_states & builder_state::LONG as u8 == 0 {
+                missing_fields.push("long");
+            }
+
+            if missing_states & builder_state::DESCRIPTION as u8 == 0 {
+                missing_fields.push("description");
+            }
+
+            Err(error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", &missing_fields.join(", ")))
+        } else {
+            let data = StringClapArgData {
+                common: ClapArgData {
+                    name: self.name.unwrap(),
+                    short: self.short.unwrap(),
+                    long: self.long.unwrap(),
+                    description: self.description.unwrap(),
+                },
+                default_value: self.default_value,
+                value_parser: self.value_parser,
+            };
+
+            Ok(StringClapArg { data })
+        }
     }
 }
 
@@ -107,9 +134,6 @@ impl From<&StringClapArg> for Arg {
 
 impl IntoFrom<&ArgMatches, String> for StringClapArg {
     fn into_from(self, parsing_result: &ArgMatches) -> String {
-        parsing_result
-            .get_one::<String>(self.name())
-            .unwrap()
-            .to_owned()
+        parsing_result.get_one::<String>(self.name()).unwrap().to_owned()
     }
 }

@@ -14,3 +14,4 @@ ruclif-core = { path = "../ruclif-core", version = "0" }
 
 [dev-dependencies]
 speculoos = "0.13"
+rstest = "0.26"

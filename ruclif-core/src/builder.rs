@@ -7,5 +7,5 @@ pub trait HasBuilder {
 pub trait Builder {
     type Result;
 
-    fn build(self) -> Self::Result;
+    fn build(self) -> Result<Self::Result, String>;
 }
