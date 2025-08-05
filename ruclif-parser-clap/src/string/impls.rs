@@ -45,10 +45,10 @@ impl StringClapArgBuilder {
     pub fn build(self) -> StringClapArg {
         let data = StringClapArgData {
             common: ClapArgData {
-                name: self.name,
-                short: self.short,
-                long: self.long,
-                description: self.description,
+                name: self.name.unwrap(),
+                short: self.short.unwrap(),
+                long: self.long.unwrap(),
+                description: self.description.unwrap(),
             },
             default_value: self.default_value,
             value_parser: self.value_parser,
@@ -60,19 +60,19 @@ impl StringClapArgBuilder {
 
 impl StringClapArg {
     fn name(&self) -> &'static str {
-        self.data.common.name.unwrap()
+        self.data.common.name
     }
 
     fn short(&self) -> char {
-       self.data.common.short.unwrap()
+       self.data.common.short
     }
 
     fn long(&self) -> &'static str {
-        self.data.common.long.unwrap()
+        self.data.common.long
     }
 
     fn description(&self) -> &'static str {
-        self.data.common.description.unwrap()
+        self.data.common.description
     }
 
     fn default_value(&self) -> &'static str {
