@@ -1,6 +1,6 @@
 pub mod string;
 
-#[derive(Default, Debug)]
+#[derive(Default, Debug, PartialEq)]
 struct ClapArgData {
     name: &'static str,        // 16 bytes
     short: char,               // 4 bytes

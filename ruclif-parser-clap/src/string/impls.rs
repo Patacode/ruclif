@@ -94,18 +94,18 @@ impl StringClapArg {
     }
 }
 
-impl Into<Arg> for StringClapArg {
-    fn into(self) -> Arg {
-        Arg::new(self.name())
-            .short(self.short())
-            .long(self.long())
-            .help(self.description())
-            .default_value(self.default_value())
-            .value_parser(self.value_parser())
+impl From<&StringClapArg> for Arg {
+    fn from(arg: &StringClapArg) -> Self {
+        Self::new(arg.name())
+            .short(arg.short())
+            .long(arg.long())
+            .help(arg.description())
+            .default_value(arg.default_value())
+            .value_parser(arg.value_parser())
     }
 }
 
-impl IntoFrom<ArgMatches, String> for StringClapArg {
+impl IntoFrom<&ArgMatches, String> for StringClapArg {
     fn into_from(self, parsing_result: &ArgMatches) -> String {
         parsing_result
             .get_one::<String>(self.name())
