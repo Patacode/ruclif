@@ -1,5 +1,5 @@
 mod builder {
-    use ruclif_core::common::HasBuilder;
+    use ruclif_core::builder::HasBuilder;
     use speculoos::assert_that;
 
     use crate::string::{StringClapArg, StringClapArgBuilder};

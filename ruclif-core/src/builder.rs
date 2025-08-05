@@ -3,3 +3,9 @@ pub trait HasBuilder {
 
     fn builder() -> Self::Builder;
 }
+
+pub trait Builder {
+    type Result;
+
+    fn build(self) -> Self::Result;
+}

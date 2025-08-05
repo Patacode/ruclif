@@ -1,5 +1,5 @@
 use clap::{Arg, ArgMatches};
-use ruclif_core::{common::HasBuilder, parser::CliArg};
+use ruclif_core::{builder::{Builder, HasBuilder}, parser::CliArg};
 
 use crate::{string::{StringClapArg, StringClapArgBuilder, StringClapArgData}, ClapArgData};
 
@@ -41,8 +41,12 @@ impl StringClapArgBuilder {
         self.value_parser = Some(value_parser);
         self
     }
+}
 
-    pub fn build(self) -> StringClapArg {
+impl Builder for StringClapArgBuilder {
+    type Result = StringClapArg;
+
+    fn build(self) -> StringClapArg {
         let data = StringClapArgData {
             common: ClapArgData {
                 name: self.name.unwrap(),
