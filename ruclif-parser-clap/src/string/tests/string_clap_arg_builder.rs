@@ -26,6 +26,21 @@ mod builder {
                     |_value: &str| -> Result<String, String> { Ok(String::from("hello")) };
             }
 
+            pub mod error_message {
+                pub const MANDATORY_FIELDS_MISSING: &str = "Following mandatory fields are missing: {fields}";
+            }
+
+            pub fn with_all() -> Result<StringClapArg, String> {
+                StringClapArg::builder()
+                    .name(defaults::NAME)
+                    .short(defaults::SHORT)
+                    .long(defaults::LONG)
+                    .description(defaults::DESCRIPTION)
+                    .default_value(defaults::DEFAULT_VALUE)
+                    .value_parser(defaults::VALUE_PARSER)
+                    .build()
+            }
+
             pub fn without_name() -> Result<StringClapArg, String> {
                 StringClapArg::builder()
                     .short(defaults::SHORT)
@@ -192,121 +207,122 @@ mod builder {
         mod happy {
             use super::*;
 
-            #[test]
-            fn test_that_it_should_build_string_clap_arg_with_all_fields_set() {
-                let value_parser = |_value: &str| -> Result<String, String> { Ok(String::from("hello")) };
-
-                let expected = StringClapArg {
-                    data: StringClapArgData {
-                        common: ClapArgData {
-                            name: "GENERATOR_URI",
-                            short: 'c',
-                            long: "generator-uri",
-                            description: "The template generator uri",
-                        },
-                        default_value: Some("/developers/gitignore/api"),
-                        value_parser: Some(value_parser),
-                    },
-                };
-                let actual = StringClapArg::builder()
-                    .name("GENERATOR_URI")
-                    .short('c')
-                    .long("generator-uri")
-                    .description("The template generator uri")
-                    .default_value("/developers/gitignore/api")
-                    .value_parser(value_parser)
-                    .build();
-
-                assert_that(&actual).is_ok_containing(expected);
-            }
-
-            mod with_optional_fields_missing {
+            mod valid_built_instance {
                 use super::*;
 
                 struct TestCaseData {
-                    name: &'static str,
                     actual: fn() -> Result<StringClapArg, String>,
                     expected: StringClapArg,
                 }
 
-                impl TestCaseData {
-                    fn without_default_value() -> Self {
-                        Self {
-                            name: "without_default_value",
-                            actual: || director::without_default_value(),
-                            expected: StringClapArg {
-                                data: StringClapArgData {
-                                    common: ClapArgData {
-                                        name: director::defaults::NAME,
-                                        short: director::defaults::SHORT,
-                                        long: director::defaults::LONG,
-                                        description: director::defaults::DESCRIPTION,
-                                    },
-                                    default_value: None,
-                                    value_parser: Some(director::defaults::VALUE_PARSER),
+                #[fixture]
+                fn string_clap_arg_with_all_fields_set() -> TestCaseData {
+                    TestCaseData {
+                        actual: || director::with_all(),
+                        expected: StringClapArg {
+                            data: StringClapArgData {
+                                common: ClapArgData {
+                                    name: director::defaults::NAME,
+                                    short: director::defaults::SHORT,
+                                    long: director::defaults::LONG,
+                                    description: director::defaults::DESCRIPTION,
                                 },
+                                default_value: Some(director::defaults::DEFAULT_VALUE),
+                                value_parser: Some(director::defaults::VALUE_PARSER),
                             },
-                        }
-                    }
-
-                    fn without_value_parser() -> Self {
-                        Self {
-                            name: "without_value_parser",
-                            actual: || director::without_value_parser(),
-                            expected: StringClapArg {
-                                data: StringClapArgData {
-                                    common: ClapArgData {
-                                        name: director::defaults::NAME,
-                                        short: director::defaults::SHORT,
-                                        long: director::defaults::LONG,
-                                        description: director::defaults::DESCRIPTION,
-                                    },
-                                    default_value: Some(director::defaults::DEFAULT_VALUE),
-                                    value_parser: None,
-                                },
-                            },
-                        }
-                    }
-
-                    fn without_value_parser_default_value() -> Self {
-                        Self {
-                            name: "without_value_parser_default_value",
-                            actual: || director::without_value_parser_default_value(),
-                            expected: StringClapArg {
-                                data: StringClapArgData {
-                                    common: ClapArgData {
-                                        name: director::defaults::NAME,
-                                        short: director::defaults::SHORT,
-                                        long: director::defaults::LONG,
-                                        description: director::defaults::DESCRIPTION,
-                                    },
-                                    default_value: None,
-                                    value_parser: None,
-                                },
-                            },
-                        }
+                        },
                     }
                 }
 
                 #[fixture]
-                fn test_cases_data() -> Vec<TestCaseData> {
-                    vec![
-                        TestCaseData::without_default_value(),
-                        TestCaseData::without_value_parser(),
-                        TestCaseData::without_value_parser_default_value(),
-                    ]
+                fn string_clap_arg_without_default_value() -> TestCaseData {
+                    TestCaseData {
+                        actual: || director::without_default_value(),
+                        expected: StringClapArg {
+                            data: StringClapArgData {
+                                common: ClapArgData {
+                                    name: director::defaults::NAME,
+                                    short: director::defaults::SHORT,
+                                    long: director::defaults::LONG,
+                                    description: director::defaults::DESCRIPTION,
+                                },
+                                default_value: None,
+                                value_parser: Some(director::defaults::VALUE_PARSER),
+                            },
+                        },
+                    }
+                }
+
+                #[fixture]
+                fn string_clap_arg_without_value_parser() -> TestCaseData {
+                    TestCaseData {
+                        actual: || director::without_value_parser(),
+                        expected: StringClapArg {
+                            data: StringClapArgData {
+                                common: ClapArgData {
+                                    name: director::defaults::NAME,
+                                    short: director::defaults::SHORT,
+                                    long: director::defaults::LONG,
+                                    description: director::defaults::DESCRIPTION,
+                                },
+                                default_value: Some(director::defaults::DEFAULT_VALUE),
+                                value_parser: None,
+                            },
+                        },
+                    }
+                }
+
+                #[fixture]
+                fn string_clap_arg_without_value_parser_and_default_value() -> TestCaseData {
+                    TestCaseData {
+                        actual: || director::without_value_parser_default_value(),
+                        expected: StringClapArg {
+                            data: StringClapArgData {
+                                common: ClapArgData {
+                                    name: director::defaults::NAME,
+                                    short: director::defaults::SHORT,
+                                    long: director::defaults::LONG,
+                                    description: director::defaults::DESCRIPTION,
+                                },
+                                default_value: None,
+                                value_parser: None,
+                            },
+                        },
+                    }
                 }
 
                 #[rstest]
-                fn it_returns_correct_string_clap_arg_instance(test_cases_data: Vec<TestCaseData>) {
-                    for test_case_data in test_cases_data {
-                        println!("Running test case '{}'", test_case_data.name);
+                fn with_all_fields_set(string_clap_arg_with_all_fields_set: TestCaseData) {
+                    let expected = string_clap_arg_with_all_fields_set.expected;
+                    let actual = (string_clap_arg_with_all_fields_set.actual)();
 
-                        let expected = test_case_data.expected;
-                        let actual = (test_case_data.actual)();
+                    assert_that(&actual).is_ok_containing(expected);
+                }
 
-                        assert_that(&actual).is_ok_containing(expected);
-                    }
+                #[rstest]
+                fn without_default_value(string_clap_arg_without_default_value: TestCaseData) {
+                    let expected = string_clap_arg_without_default_value.expected;
+                    let actual = (string_clap_arg_without_default_value.actual)();
+
+                    assert_that(&actual).is_ok_containing(expected);
+                }
+
+                #[rstest]
+                fn without_value_parser(string_clap_arg_without_value_parser: TestCaseData) {
+                    let expected = string_clap_arg_without_value_parser.expected;
+                    let actual = (string_clap_arg_without_value_parser.actual)();
+
+                    assert_that(&actual).is_ok_containing(expected);
+                }
+
+                #[rstest]
+                fn without_value_parser_default_value(
+                    string_clap_arg_without_value_parser_and_default_value: TestCaseData,
+                ) {
+                    let expected = string_clap_arg_without_value_parser_and_default_value.expected;
+                    let actual = (string_clap_arg_without_value_parser_and_default_value.actual)();
+
+                    assert_that(&actual).is_ok_containing(expected);
                 }
             }
         }
@@ -314,103 +330,256 @@ mod builder {
         mod unhappy {
             use super::*;
 
-            mod with_mandatory_fields_missing {
+            mod invalid_built_instance {
                 use super::*;
 
                 struct TestCaseData {
-                    name: &'static str,
                     actual: fn() -> Result<StringClapArg, String>,
                     expected: &'static str,
                 }
 
-                #[fixture]
-                fn test_cases_data() -> Vec<TestCaseData> {
-                    vec![
-                        TestCaseData {
-                            name: "without_name",
+                impl TestCaseData {
+                    fn without_name() -> Self {
+                        Self {
                             actual: || director::without_name(),
                             expected: "name",
-                        },
-                        TestCaseData {
-                            name: "without_short",
+                        }
+                    }
+
+                    fn without_short() -> Self {
+                        Self {
                             actual: || director::without_short(),
                             expected: "short",
-                        },
-                        TestCaseData {
-                            name: "without_long",
+                        }
+                    }
+
+                    fn without_long() -> Self {
+                        Self {
                             actual: || director::without_long(),
                             expected: "long",
-                        },
-                        TestCaseData {
-                            name: "without_description",
+                        }
+                    }
+
+                    fn without_description() -> Self {
+                        Self {
                             actual: || director::without_description(),
                             expected: "description",
-                        },
-                        TestCaseData {
-                            name: "without_name_short",
+                        }
+                    }
+
+                    fn without_name_short() -> Self {
+                        Self {
                             actual: || director::without_name_short(),
                             expected: "name, short",
-                        },
-                        TestCaseData {
-                            name: "without_name_long",
+                        }
+                    }
+
+                    fn without_name_long() -> Self {
+                        Self {
                             actual: || director::without_name_long(),
                             expected: "name, long",
-                        },
-                        TestCaseData {
-                            name: "without_name_description",
+                        }
+                    }
+
+                    fn without_name_description() -> Self {
+                        Self {
                             actual: || director::without_name_description(),
                             expected: "name, description",
-                        },
-                        TestCaseData {
-                            name: "without_short_long",
+                        }
+                    }
+
+                    fn without_short_long() -> Self {
+                        Self {
                             actual: || director::without_short_long(),
                             expected: "short, long",
-                        },
-                        TestCaseData {
-                            name: "without_short_description",
+                        }
+                    }
+
+                    fn without_short_description() -> Self {
+                        Self {
                             actual: || director::without_short_description(),
                             expected: "short, description",
-                        },
-                        TestCaseData {
-                            name: "without_long_description",
+                        }
+                    }
+
+                    fn without_long_description() -> Self {
+                        Self {
                             actual: || director::without_long_description(),
                             expected: "long, description",
-                        },
-                        TestCaseData {
-                            name: "without_name_short_long",
+                        }
+                    }
+
+                    fn without_name_short_long() -> Self {
+                        Self {
                             actual: || director::without_name_short_long(),
                             expected: "name, short, long",
-                        },
-                        TestCaseData {
-                            name: "without_name_short_description",
+                        }
+                    }
+
+                    fn without_name_short_description() -> Self {
+                        Self {
                             actual: || director::without_name_short_description(),
                             expected: "name, short, description",
-                        },
-                        TestCaseData {
-                            name: "without_name_long_description",
+                        }
+                    }
+
+                    fn without_name_long_description() -> Self {
+                        Self {
                             actual: || director::without_name_long_description(),
                             expected: "name, long, description",
-                        },
-                        TestCaseData {
-                            name: "without_short_long_description",
+                        }
+                    }
+
+                    fn without_short_long_description() -> Self {
+                        Self {
                             actual: || director::without_short_long_description(),
                             expected: "short, long, description",
-                        },
-                        TestCaseData {
-                            name: "without_any_mandatory_fields",
+                        }
+                    }
+
+                    fn without_any_mandatory_fields() -> Self {
+                        Self {
                             actual: || director::without_any_mandatory_fields(),
                             expected: "name, short, long, description",
-                        },
-                    ]
+                        }
+                    }
                 }
 
-                #[rstest]
-                fn it_returns_correct_error(test_cases_data: Vec<TestCaseData>) {
-                    for test_case_data in test_cases_data {
-                        println!("Running test case '{}'", test_case_data.name);
+                mod missing_mandatory_fields {
+                    use super::*;
+                    use crate::string::tests::string_clap_arg_builder::builder::build::director::error_message;
 
-                        let expected = format!("Following mandatory fields are missing: {}", test_case_data.expected);
-                        let actual = (test_case_data.actual)();
+                    #[test]
+                    fn without_name() {
+                        let test_data = TestCaseData::without_name();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_short() {
+                        let test_data = TestCaseData::without_short();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_long() {
+                        let test_data = TestCaseData::without_long();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_description() {
+                        let test_data = TestCaseData::without_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_name_short() {
+                        let test_data = TestCaseData::without_name_short();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_name_long() {
+                        let test_data = TestCaseData::without_name_long();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_name_description() {
+                        let test_data = TestCaseData::without_name_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_short_long() {
+                        let test_data = TestCaseData::without_short_long();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_short_description() {
+                        let test_data = TestCaseData::without_short_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_long_description() {
+                        let test_data = TestCaseData::without_long_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_name_short_long() {
+                        let test_data = TestCaseData::without_name_short_long();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_name_short_description() {
+                        let test_data = TestCaseData::without_name_short_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_name_long_description() {
+                        let test_data = TestCaseData::without_name_long_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_short_long_description() {
+                        let test_data = TestCaseData::without_short_long_description();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
+
+                        assert_that(&actual).is_err_containing(expected);
+                    }
+
+                    #[test]
+                    fn without_any_mandatory_fields() {
+                        let test_data = TestCaseData::without_any_mandatory_fields();
+                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
+                        let actual = (test_data.actual)();
 
                         assert_that(&actual).is_err_containing(expected);
                     }
