@@ -1,14 +1,24 @@
+use ruclif_core::builder::HasBuilder;
+use speculoos::assert_that;
+
+use crate::string::{StringClapArg, StringClapArgBuilder};
+
 mod has_builder {
-    use ruclif_core::builder::HasBuilder;
-    use speculoos::assert_that;
+    use super::*;
 
-    use crate::string::{StringClapArg, StringClapArgBuilder};
+    mod builder {
+        use super::*;
 
-    #[test]
-    fn test_that_it_should_return_correct_builder_instance() {
-        let expected = StringClapArgBuilder::default();
-        let actual = StringClapArg::builder();
+        mod happy {
+            use super::*;
 
-        assert_that(&actual).is_equal_to(expected);
+            #[test]
+            fn it_should_return_correct_builder_instance() {
+                let expected = StringClapArgBuilder::default();
+                let actual = StringClapArg::builder();
+
+                assert_that(&actual).is_equal_to(expected);
+            }
+        }
     }
 }
