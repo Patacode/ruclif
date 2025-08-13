@@ -96,10 +96,10 @@ args = ["clippy", "--all-targets", "--all-features", "--fix"]
 description = "Update trello board name with content of .version file"
 script = '''
 new_version=$(cat .version)
-new_name="gitignore-template-generator+${new_version}"
+new_name="ruclif+${new_version}"
 key=$(cat "$TRELLO_API_KEY")
 token=$(cat "$TRELLO_API_TOKEN")
-curl -o /dev/null -s -X PUT "https://api.trello.com/1/boards/FZLDdiLN?name=${new_name}&key=${key}&token=${token}"
+curl -o /dev/null -s -X PUT "https://api.trello.com/1/boards/rFiwyec6?name=${new_name}&key=${key}&token=${token}"
 echo "Trello board version bumped to ${new_version}"
 '''
 
@@ -109,13 +109,13 @@ script = '''
 old_version=$(cat .version)
 key=$(cat "$TRELLO_API_KEY")
 token=$(cat "$TRELLO_API_TOKEN")
-curl -s "https://api.trello.com/1/lists/68027d1040324003560f3169/cards?key=${key}&token=${token}" | jq -c '.[] | {id, name}' |
+curl -s "https://api.trello.com/1/lists/687d7636f73af196f764dcee/cards?key=${key}&token=${token}" | jq -c '.[] | {id, name}' |
 while read -r card; do
   card_name=$(echo "${card}" | jq -r '.name')
   card_id=$(echo "${card}" | jq -r '.id')
   url_encoded_card_name=$(jq -rn --arg v "$card_name" '$v|@uri')
   new_name="${old_version}+-+${url_encoded_card_name}"
-  curl -o /dev/null -s -X PUT "https://api.trello.com/1/cards/${card_id}?name=${new_name}&idList=68027e5026b59f970b733488&key=${key}&token=${token}"
+  curl -o /dev/null -s -X PUT "https://api.trello.com/1/cards/${card_id}?name=${new_name}&key=${key}&token=${token}"
   echo "Renamed card ${card_id} with version specifier"
 done
 '''
@@ -125,9 +125,9 @@ description = "Move trello cards from Done to History column"
 script = '''
 key=$(cat "$TRELLO_API_KEY")
 token=$(cat "$TRELLO_API_TOKEN")
-card_ids=$(curl -s "https://api.trello.com/1/lists/68027d1040324003560f3169/cards?key=${key}&token=${token}" | jq -r '.[].id')
+card_ids=$(curl -s "https://api.trello.com/1/lists/687d7636f73af196f764dcee/cards?key=${key}&token=${token}" | jq -r '.[].id')
 for card_id in $card_ids; do
-  curl -o /dev/null -s -X PUT "https://api.trello.com/1/cards/${card_id}?idList=68027e5026b59f970b733488&key=${key}&token=${token}"
+  curl -o /dev/null -s -X PUT "https://api.trello.com/1/cards/${card_id}?idList=687d7636f73af196f764dcf1&key=${key}&token=${token}"
   echo "Moved card ${card_id} to History column"
 done
 '''
