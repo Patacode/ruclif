@@ -5,26 +5,28 @@ mod impls;
 #[cfg(test)]
 mod tests;
 
-#[derive(Default, Debug, PartialEq, Eq)]
+pub type ValueParserFunc = fn(&str) -> Result<String, String>;
+
+#[derive(Debug, PartialEq, Eq)]
 pub struct StringClapArgData {
-    common: ClapArgData,                                      // 56 bytes
-    default_value: Option<&'static str>,                      // 16 bytes
-    value_parser: Option<fn(&str) -> Result<String, String>>, // 8 bytes
+    common: ClapArgData,                   // 56 bytes
+    default_value: Option<&'static str>,   // 16 bytes
+    value_parser: Option<ValueParserFunc>, // 8 bytes
 } // 80 bytes
 
-#[derive(Default, Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct StringClapArg {
     data: StringClapArgData, // 80 bytes
 } // 80 bytes
 
 #[derive(Default, Debug, PartialEq, Eq)]
 pub struct StringClapArgBuilder {
-    name: Option<&'static str>,                               // 16 bytes
-    short: Option<char>,                                      // 4 bytes
-    long: Option<&'static str>,                               // 16 bytes
-    description: Option<&'static str>,                        // 16 bytes
-    default_value: Option<&'static str>,                      // 16 bytes
-    value_parser: Option<fn(&str) -> Result<String, String>>, // 8 bytes
+    name: Option<&'static str>,            // 16 bytes
+    short: Option<char>,                   // 4 bytes
+    long: Option<&'static str>,            // 16 bytes
+    description: Option<&'static str>,     // 16 bytes
+    default_value: Option<&'static str>,   // 16 bytes
+    value_parser: Option<ValueParserFunc>, // 8 bytes
     state: u8,
 } // 80 bytes
 

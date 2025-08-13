@@ -1,589 +1,330 @@
 use rstest::*;
-use ruclif_core::builder::{Builder, HasBuilder};
+use ruclif_core::builder::Builder;
 use speculoos::{assert_that, result::ContainingResultAssertions};
 
 use crate::{
-    string::{StringClapArg, StringClapArgData},
+    string::{
+        tests::string_clap_arg_builder::director::{defaults, TestData},
+        StringClapArg, StringClapArgBuilder, StringClapArgData,
+    },
     ClapArgData,
 };
 
-mod builder {
+mod director;
+
+mod build {
     use super::*;
 
-    mod build {
+    #[fixture]
+    pub fn test_data() -> TestData {
+        TestData::with_all_fields_set()
+    }
+
+    mod happy {
         use super::*;
 
-        mod director {
+        mod it_returns_string_clap_arg {
             use super::*;
 
-            pub mod defaults {
-                pub const NAME: &str = "GENERATOR_URI";
-                pub const SHORT: char = 'c';
-                pub const LONG: &str = "generator-uri";
-                pub const DESCRIPTION: &str = "The template generator uri";
-                pub const DEFAULT_VALUE: &str = "/developers/gitignore/api";
-                pub const VALUE_PARSER: fn(&str) -> Result<String, String> =
-                    |_value: &str| -> Result<String, String> { Ok(String::from("hello")) };
+            #[rstest]
+            fn when_all_fields_set(test_data: TestData) {
+                let expected = StringClapArg {
+                    data: StringClapArgData {
+                        common: ClapArgData {
+                            name: defaults::NAME,
+                            short: defaults::SHORT,
+                            long: defaults::LONG,
+                            description: defaults::DESCRIPTION,
+                        },
+                        default_value: Some(defaults::DEFAULT_VALUE),
+                        value_parser: Some(defaults::VALUE_PARSER),
+                    },
+                };
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
+
+                assert_that(&actual).is_ok_containing(expected);
             }
 
-            pub mod error_message {
-                pub const MANDATORY_FIELDS_MISSING: &str = "Following mandatory fields are missing: {fields}";
+            #[rstest]
+            fn when_no_default_value(test_data: TestData) {
+                let expected = StringClapArg {
+                    data: StringClapArgData {
+                        common: ClapArgData {
+                            name: defaults::NAME,
+                            short: defaults::SHORT,
+                            long: defaults::LONG,
+                            description: defaults::DESCRIPTION,
+                        },
+                        default_value: None,
+                        value_parser: Some(defaults::VALUE_PARSER),
+                    },
+                };
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .value_parser(test_data.value_parser())
+                    .build();
+
+                assert_that(&actual).is_ok_containing(expected);
             }
 
-            pub fn with_all() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
+            #[rstest]
+            fn when_no_value_parser(test_data: TestData) {
+                let expected = StringClapArg {
+                    data: StringClapArgData {
+                        common: ClapArgData {
+                            name: defaults::NAME,
+                            short: defaults::SHORT,
+                            long: defaults::LONG,
+                            description: defaults::DESCRIPTION,
+                        },
+                        default_value: Some(defaults::DEFAULT_VALUE),
+                        value_parser: None,
+                    },
+                };
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .build();
+
+                assert_that(&actual).is_ok_containing(expected);
             }
 
-            pub fn without_name() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .short(defaults::SHORT)
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
+            #[rstest]
+            fn when_no_default_value_neither_value_parser(test_data: TestData) {
+                let expected = StringClapArg {
+                    data: StringClapArgData {
+                        common: ClapArgData {
+                            name: defaults::NAME,
+                            short: defaults::SHORT,
+                            long: defaults::LONG,
+                            description: defaults::DESCRIPTION,
+                        },
+                        default_value: None,
+                        value_parser: None,
+                    },
+                };
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .build();
 
-            pub fn without_short() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_long() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .long(defaults::LONG)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_default_value() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_value_parser() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .build()
-            }
-
-            pub fn without_value_parser_default_value() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .build()
-            }
-
-            pub fn without_name_short() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .long(defaults::LONG)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_name_long() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .short(defaults::SHORT)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_name_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .long(defaults::LONG)
-                    .short(defaults::SHORT)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_short_long() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_short_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .long(defaults::LONG)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_long_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .short(defaults::SHORT)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_name_short_long() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .description(defaults::DESCRIPTION)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_name_short_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .long(defaults::LONG)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_name_long_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .short(defaults::SHORT)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_short_long_description() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .name(defaults::NAME)
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
-            }
-
-            pub fn without_any_mandatory_fields() -> Result<StringClapArg, String> {
-                StringClapArg::builder()
-                    .default_value(defaults::DEFAULT_VALUE)
-                    .value_parser(defaults::VALUE_PARSER)
-                    .build()
+                assert_that(&actual).is_ok_containing(expected);
             }
         }
+    }
 
-        mod happy {
+    mod unhappy {
+        use super::*;
+
+        mod it_returns_error_message {
             use super::*;
 
-            mod valid_built_instance {
-                use super::*;
+            #[rstest]
+            fn when_no_name(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name");
+                let actual = StringClapArgBuilder::default()
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                struct TestCaseData {
-                    actual: fn() -> Result<StringClapArg, String>,
-                    expected: StringClapArg,
-                }
-
-                #[fixture]
-                fn string_clap_arg_with_all_fields_set() -> TestCaseData {
-                    TestCaseData {
-                        actual: || director::with_all(),
-                        expected: StringClapArg {
-                            data: StringClapArgData {
-                                common: ClapArgData {
-                                    name: director::defaults::NAME,
-                                    short: director::defaults::SHORT,
-                                    long: director::defaults::LONG,
-                                    description: director::defaults::DESCRIPTION,
-                                },
-                                default_value: Some(director::defaults::DEFAULT_VALUE),
-                                value_parser: Some(director::defaults::VALUE_PARSER),
-                            },
-                        },
-                    }
-                }
-
-                #[fixture]
-                fn string_clap_arg_without_default_value() -> TestCaseData {
-                    TestCaseData {
-                        actual: || director::without_default_value(),
-                        expected: StringClapArg {
-                            data: StringClapArgData {
-                                common: ClapArgData {
-                                    name: director::defaults::NAME,
-                                    short: director::defaults::SHORT,
-                                    long: director::defaults::LONG,
-                                    description: director::defaults::DESCRIPTION,
-                                },
-                                default_value: None,
-                                value_parser: Some(director::defaults::VALUE_PARSER),
-                            },
-                        },
-                    }
-                }
-
-                #[fixture]
-                fn string_clap_arg_without_value_parser() -> TestCaseData {
-                    TestCaseData {
-                        actual: || director::without_value_parser(),
-                        expected: StringClapArg {
-                            data: StringClapArgData {
-                                common: ClapArgData {
-                                    name: director::defaults::NAME,
-                                    short: director::defaults::SHORT,
-                                    long: director::defaults::LONG,
-                                    description: director::defaults::DESCRIPTION,
-                                },
-                                default_value: Some(director::defaults::DEFAULT_VALUE),
-                                value_parser: None,
-                            },
-                        },
-                    }
-                }
-
-                #[fixture]
-                fn string_clap_arg_without_value_parser_and_default_value() -> TestCaseData {
-                    TestCaseData {
-                        actual: || director::without_value_parser_default_value(),
-                        expected: StringClapArg {
-                            data: StringClapArgData {
-                                common: ClapArgData {
-                                    name: director::defaults::NAME,
-                                    short: director::defaults::SHORT,
-                                    long: director::defaults::LONG,
-                                    description: director::defaults::DESCRIPTION,
-                                },
-                                default_value: None,
-                                value_parser: None,
-                            },
-                        },
-                    }
-                }
-
-                #[rstest]
-                fn with_all_fields_set(string_clap_arg_with_all_fields_set: TestCaseData) {
-                    let expected = string_clap_arg_with_all_fields_set.expected;
-                    let actual = (string_clap_arg_with_all_fields_set.actual)();
-
-                    assert_that(&actual).is_ok_containing(expected);
-                }
-
-                #[rstest]
-                fn without_default_value(string_clap_arg_without_default_value: TestCaseData) {
-                    let expected = string_clap_arg_without_default_value.expected;
-                    let actual = (string_clap_arg_without_default_value.actual)();
-
-                    assert_that(&actual).is_ok_containing(expected);
-                }
-
-                #[rstest]
-                fn without_value_parser(string_clap_arg_without_value_parser: TestCaseData) {
-                    let expected = string_clap_arg_without_value_parser.expected;
-                    let actual = (string_clap_arg_without_value_parser.actual)();
-
-                    assert_that(&actual).is_ok_containing(expected);
-                }
-
-                #[rstest]
-                fn without_value_parser_default_value(
-                    string_clap_arg_without_value_parser_and_default_value: TestCaseData,
-                ) {
-                    let expected = string_clap_arg_without_value_parser_and_default_value.expected;
-                    let actual = (string_clap_arg_without_value_parser_and_default_value.actual)();
-
-                    assert_that(&actual).is_ok_containing(expected);
-                }
+                assert_that(&actual).is_err_containing(expected);
             }
-        }
 
-        mod unhappy {
-            use super::*;
+            #[rstest]
+            fn when_no_short(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: short");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-            mod invalid_built_instance {
-                use super::*;
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                struct TestCaseData {
-                    actual: fn() -> Result<StringClapArg, String>,
-                    expected: &'static str,
-                }
+            #[rstest]
+            fn when_no_long(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: long");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                impl TestCaseData {
-                    fn without_name() -> Self {
-                        Self {
-                            actual: || director::without_name(),
-                            expected: "name",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_short() -> Self {
-                        Self {
-                            actual: || director::without_short(),
-                            expected: "short",
-                        }
-                    }
+            #[rstest]
+            fn when_no_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: description");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_long() -> Self {
-                        Self {
-                            actual: || director::without_long(),
-                            expected: "long",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_description() -> Self {
-                        Self {
-                            actual: || director::without_description(),
-                            expected: "description",
-                        }
-                    }
+            #[rstest]
+            fn when_no_name_neither_short(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, short");
+                let actual = StringClapArgBuilder::default()
+                    .long(test_data.long())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_name_short() -> Self {
-                        Self {
-                            actual: || director::without_name_short(),
-                            expected: "name, short",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_name_long() -> Self {
-                        Self {
-                            actual: || director::without_name_long(),
-                            expected: "name, long",
-                        }
-                    }
+            #[rstest]
+            fn when_no_name_neither_long(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, long");
+                let actual = StringClapArgBuilder::default()
+                    .short(test_data.short())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_name_description() -> Self {
-                        Self {
-                            actual: || director::without_name_description(),
-                            expected: "name, description",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_short_long() -> Self {
-                        Self {
-                            actual: || director::without_short_long(),
-                            expected: "short, long",
-                        }
-                    }
+            #[rstest]
+            fn when_no_name_neither_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, description");
+                let actual = StringClapArgBuilder::default()
+                    .short(test_data.short())
+                    .long(test_data.long())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_short_description() -> Self {
-                        Self {
-                            actual: || director::without_short_description(),
-                            expected: "short, description",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_long_description() -> Self {
-                        Self {
-                            actual: || director::without_long_description(),
-                            expected: "long, description",
-                        }
-                    }
+            #[rstest]
+            fn when_no_short_neither_long(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: short, long");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_name_short_long() -> Self {
-                        Self {
-                            actual: || director::without_name_short_long(),
-                            expected: "name, short, long",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_name_short_description() -> Self {
-                        Self {
-                            actual: || director::without_name_short_description(),
-                            expected: "name, short, description",
-                        }
-                    }
+            #[rstest]
+            fn when_no_short_neither_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: short, description");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .long(test_data.long())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_name_long_description() -> Self {
-                        Self {
-                            actual: || director::without_name_long_description(),
-                            expected: "name, long, description",
-                        }
-                    }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                    fn without_short_long_description() -> Self {
-                        Self {
-                            actual: || director::without_short_long_description(),
-                            expected: "short, long, description",
-                        }
-                    }
+            #[rstest]
+            fn when_no_long_neither_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: long, description");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .short(test_data.short())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    fn without_any_mandatory_fields() -> Self {
-                        Self {
-                            actual: || director::without_any_mandatory_fields(),
-                            expected: "name, short, long, description",
-                        }
-                    }
-                }
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                mod missing_mandatory_fields {
-                    use super::*;
-                    use crate::string::tests::string_clap_arg_builder::builder::build::director::error_message;
+            #[rstest]
+            fn when_no_name_neither_short_neither_long(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, short, long");
+                let actual = StringClapArgBuilder::default()
+                    .description(test_data.description())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    #[test]
-                    fn without_name() {
-                        let test_data = TestCaseData::without_name();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                        assert_that(&actual).is_err_containing(expected);
-                    }
+            #[rstest]
+            fn when_no_name_neither_short_neither_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, short, description");
+                let actual = StringClapArgBuilder::default()
+                    .long(test_data.long())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    #[test]
-                    fn without_short() {
-                        let test_data = TestCaseData::without_short();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                        assert_that(&actual).is_err_containing(expected);
-                    }
+            #[rstest]
+            fn when_no_name_neither_long_neither_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, long, description");
+                let actual = StringClapArgBuilder::default()
+                    .short(test_data.short())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    #[test]
-                    fn without_long() {
-                        let test_data = TestCaseData::without_long();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                        assert_that(&actual).is_err_containing(expected);
-                    }
+            #[rstest]
+            fn when_no_short_neither_long_neither_description(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: short, long, description");
+                let actual = StringClapArgBuilder::default()
+                    .name(test_data.name())
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    #[test]
-                    fn without_description() {
-                        let test_data = TestCaseData::without_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
+                assert_that(&actual).is_err_containing(expected);
+            }
 
-                        assert_that(&actual).is_err_containing(expected);
-                    }
+            #[rstest]
+            fn when_all_mandatory_fields_unset(test_data: TestData) {
+                let expected = String::from("Following mandatory fields are missing: name, short, long, description");
+                let actual = StringClapArgBuilder::default()
+                    .default_value(test_data.default_value())
+                    .value_parser(test_data.value_parser())
+                    .build();
 
-                    #[test]
-                    fn without_name_short() {
-                        let test_data = TestCaseData::without_name_short();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_name_long() {
-                        let test_data = TestCaseData::without_name_long();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_name_description() {
-                        let test_data = TestCaseData::without_name_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_short_long() {
-                        let test_data = TestCaseData::without_short_long();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_short_description() {
-                        let test_data = TestCaseData::without_short_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_long_description() {
-                        let test_data = TestCaseData::without_long_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_name_short_long() {
-                        let test_data = TestCaseData::without_name_short_long();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_name_short_description() {
-                        let test_data = TestCaseData::without_name_short_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_name_long_description() {
-                        let test_data = TestCaseData::without_name_long_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_short_long_description() {
-                        let test_data = TestCaseData::without_short_long_description();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-
-                    #[test]
-                    fn without_any_mandatory_fields() {
-                        let test_data = TestCaseData::without_any_mandatory_fields();
-                        let expected = error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", test_data.expected);
-                        let actual = (test_data.actual)();
-
-                        assert_that(&actual).is_err_containing(expected);
-                    }
-                }
+                assert_that(&actual).is_err_containing(expected);
             }
         }
     }
