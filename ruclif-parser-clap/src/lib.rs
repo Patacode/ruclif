@@ -1,3 +1,4 @@
+pub mod flag;
 pub mod string;
 
 #[derive(Debug, PartialEq, Eq)]
