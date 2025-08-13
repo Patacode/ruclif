@@ -9,7 +9,9 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
-@Content
+### Added
+
+- Add clap implementation of ruclif-parser with ability to create string args
 
 ## [0.1.6] - 2025-07-23 <a id="0.1.6"></a>
 
