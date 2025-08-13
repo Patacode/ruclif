@@ -8,6 +8,6 @@ Rust framework to create well-structured and easy-to-manage CLI tools.
 
 ## Installation
 
-Current release: [0.1.6](CHANGELOG.md#0.1.6)
+Current release: [0.1.7](CHANGELOG.md#0.1.7)
 
 *To complete...*
