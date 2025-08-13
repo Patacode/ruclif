@@ -3,17 +3,13 @@ use ruclif_core::builder::Builder;
 use speculoos::{assert_that, result::ContainingResultAssertions};
 
 use crate::{
-    string::{
-        tests::string_clap_arg_builder::director::{defaults, TestData},
-        StringClapArg, StringClapArgBuilder, StringClapArgData,
-    },
+    string::{tests::director::defaults, StringClapArg, StringClapArgBuilder, StringClapArgData},
     ClapArgData,
 };
 
-mod director;
-
 mod build {
     use super::*;
+    use crate::string::tests::director::TestData;
 
     #[fixture]
     pub fn test_data() -> TestData {
