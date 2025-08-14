@@ -120,23 +120,30 @@ impl StringClapArg {
         self.data.common.description
     }
 
-    fn default_value(&self) -> &'static str {
-        self.data.default_value.unwrap()
+    fn default_value(&self) -> Option<&'static str> {
+        self.data.default_value
     }
 
-    fn value_parser(&self) -> fn(&str) -> Result<String, String> {
-        self.data.value_parser.unwrap()
+    fn value_parser(&self) -> Option<fn(&str) -> Result<String, String>> {
+        self.data.value_parser
     }
 }
 
 impl From<&StringClapArg> for Arg {
     fn from(arg: &StringClapArg) -> Self {
-        Self::new(arg.name())
+        let mut result = Self::new(arg.name())
             .short(arg.short())
             .long(arg.long())
-            .help(arg.description())
-            .default_value(arg.default_value())
-            .value_parser(arg.value_parser())
+            .help(arg.description());
+
+        if let Some(default_value) = arg.default_value() {
+            result = result.default_value(default_value);
+        }
+        if let Some(value_parser) = arg.value_parser() {
+            result = result.value_parser(value_parser);
+        }
+
+        result
     }
 }
 
