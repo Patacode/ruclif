@@ -9,6 +9,10 @@ and this project adheres to
 [comment]: <> (@PlannedForNextRelease)
 ## [@Unreleased] - @ReleaseDate
 
+@Content
+
+## [0.1.8] - 2025-08-21 <a id="0.1.8"></a>
+
 ### Added
 
 - Add flag clap arg implementation to create boolean-like args 
