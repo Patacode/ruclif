@@ -140,6 +140,8 @@ impl From<&BoolClapArg> for Arg {
 
         if let Some(action) = arg.action() {
             result = result.action(action);
+        } else {
+            result  = result.action(&BoolArgAction::SetTrue)
         }
 
         result
