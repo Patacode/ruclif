@@ -8,19 +8,19 @@ use ruclif_core::{
 };
 
 use crate::{
-    flag::{builder_state, error_message, BoolArgAction, BoolClapArg, BoolClapArgBuilder, BoolClapArgData},
+    flag::{builder_state, error_message, FlagArgAction, FlagClapArg, FlagClapArgBuilder, FlagClapArgData},
     ClapArgData,
 };
 
-impl HasBuilder for BoolClapArgData {
-    type Builder = BoolClapArgBuilder;
+impl HasBuilder for FlagClapArg {
+    type Builder = FlagClapArgBuilder;
 
     fn builder() -> Self::Builder {
-        BoolClapArgBuilder::default()
+        FlagClapArgBuilder::default()
     }
 }
 
-impl BoolClapArgBuilder {
+impl FlagClapArgBuilder {
     pub fn name(mut self, name: &'static str) -> Self {
         self.name = Some(name);
         self.state |= builder_state::NAME as u8;
@@ -45,13 +45,13 @@ impl BoolClapArgBuilder {
         self
     }
 
-    pub fn action(mut self, action: BoolArgAction) -> Self {
+    pub fn action(mut self, action: FlagArgAction) -> Self {
         self.action = Some(action);
         self
     }
 }
 
-impl BoolClapArgBuilder {
+impl FlagClapArgBuilder {
     fn is_name_set(&self) -> bool {
         self.state & builder_state::NAME as u8 != 0
     }
@@ -69,12 +69,12 @@ impl BoolClapArgBuilder {
     }
 }
 
-impl Builder for BoolClapArgBuilder {
-    type Result = BoolClapArg;
+impl Builder for FlagClapArgBuilder {
+    type Result = FlagClapArg;
 
-    fn build(self) -> Result<BoolClapArg, String> {
+    fn build(self) -> Result<FlagClapArg, String> {
         if self.state != builder_state::EXPECTED {
-            let map = vec![
+            let map = [
                 ("name", !self.is_name_set()),
                 ("short", !self.is_short_set()),
                 ("long", !self.is_long_set()),
@@ -85,22 +85,22 @@ impl Builder for BoolClapArgBuilder {
 
             Err(error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", &missing_fields.join(", ")))
         } else {
-            let data = BoolClapArgData {
+            let data = FlagClapArgData {
                 common: ClapArgData {
                     name: self.name.unwrap(),
                     short: self.short.unwrap(),
                     long: self.long.unwrap(),
                     description: self.description.unwrap(),
                 },
-                action: self.action,
+                action: self.action.unwrap_or(FlagArgAction::SetTrue),
             };
 
-            Ok(BoolClapArg { data })
+            Ok(FlagClapArg { data })
         }
     }
 }
 
-impl BoolClapArg {
+impl FlagClapArg {
     fn name(&self) -> &'static str {
         self.data.common.name
     }
@@ -117,38 +117,31 @@ impl BoolClapArg {
         self.data.common.description
     }
 
-    fn action(&self) -> &Option<BoolArgAction> {
+    fn action(&self) -> &FlagArgAction {
         &self.data.action
     }
 }
 
-impl IntoResettable<ArgAction> for &BoolArgAction {
+impl IntoResettable<ArgAction> for &FlagArgAction {
     fn into_resettable(self) -> Resettable<ArgAction> {
         match self {
-            BoolArgAction::SetTrue => Resettable::Value(ArgAction::SetTrue),
-            BoolArgAction::SetFalse => Resettable::Value(ArgAction::SetFalse),
+            FlagArgAction::SetTrue => Resettable::Value(ArgAction::SetTrue),
+            FlagArgAction::SetFalse => Resettable::Value(ArgAction::SetFalse),
         }
     }
 }
 
-impl From<&BoolClapArg> for Arg {
-    fn from(arg: &BoolClapArg) -> Self {
-        let mut result = Self::new(arg.name())
+impl From<&FlagClapArg> for Arg {
+    fn from(arg: &FlagClapArg) -> Self {
+        Self::new(arg.name())
             .short(arg.short())
             .long(arg.long())
-            .help(arg.description());
-
-        if let Some(action) = arg.action() {
-            result = result.action(action);
-        } else {
-            result  = result.action(&BoolArgAction::SetTrue)
-        }
-
-        result
+            .help(arg.description())
+            .action(arg.action())
     }
 }
 
-impl IntoFrom<&ArgMatches, bool> for BoolClapArg {
+impl IntoFrom<&ArgMatches, bool> for FlagClapArg {
     fn into_from(self, parsing_result: &ArgMatches) -> bool {
         parsing_result.get_flag(self.name())
     }

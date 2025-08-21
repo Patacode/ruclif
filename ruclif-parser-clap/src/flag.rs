@@ -5,30 +5,30 @@ mod impls;
 #[cfg(test)]
 mod tests;
 
-#[derive(Debug, PartialEq, Eq)]
-pub enum BoolArgAction {
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub enum FlagArgAction {
     SetTrue,
     SetFalse,
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct BoolClapArgData {
+pub struct FlagClapArgData {
     common: ClapArgData, // 56 bytes
-    action: Option<BoolArgAction>,
+    action: FlagArgAction,
 } // 80 bytes
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct BoolClapArg {
-    data: BoolClapArgData, // 80 bytes
+pub struct FlagClapArg {
+    data: FlagClapArgData, // 80 bytes
 } // 80 bytes
 
 #[derive(Default, Debug, PartialEq, Eq)]
-pub struct BoolClapArgBuilder {
+pub struct FlagClapArgBuilder {
     name: Option<&'static str>,        // 16 bytes
     short: Option<char>,               // 4 bytes
     long: Option<&'static str>,        // 16 bytes
     description: Option<&'static str>, // 16 bytes
-    action: Option<BoolArgAction>,
+    action: Option<FlagArgAction>,
     state: u8,
 } // 80 bytes
 

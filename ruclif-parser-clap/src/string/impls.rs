@@ -76,7 +76,7 @@ impl Builder for StringClapArgBuilder {
 
     fn build(self) -> Result<StringClapArg, String> {
         if self.state != builder_state::EXPECTED {
-            let map = vec![
+            let map = [
                 ("name", !self.is_name_set()),
                 ("short", !self.is_short_set()),
                 ("long", !self.is_long_set()),
@@ -124,7 +124,7 @@ impl StringClapArg {
         self.data.default_value
     }
 
-    fn value_parser(&self) -> Option<fn(&str) -> Result<String, String>> {
+    fn value_parser(&self) -> Option<ValueParserFunc> {
         self.data.value_parser
     }
 }

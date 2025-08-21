@@ -10,3 +10,4 @@ repository.workspace = true
 
 [dependencies]
 ruclif-parser-clap = { path = "../ruclif-parser-clap", version = "0" }
+ruclif-core = { path = "../ruclif-core", version = "0" }
