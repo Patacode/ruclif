@@ -1,4 +1,4 @@
-use crate::ClapArgData;
+use crate::ClapNamedArgData;
 
 mod impls;
 
@@ -6,31 +6,31 @@ mod impls;
 mod tests;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub enum FlagArgAction {
+pub enum FlagAction {
     SetTrue,
     SetFalse,
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct FlagClapArgData {
-    common: ClapArgData, // 56 bytes
-    action: FlagArgAction,
-} // 80 bytes
+    common: ClapNamedArgData,
+    action: FlagAction,
+}
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct FlagClapArg {
-    data: FlagClapArgData, // 80 bytes
-} // 80 bytes
+    data: FlagClapArgData,
+}
 
-#[derive(Default, Debug, PartialEq, Eq)]
+#[derive(Default, Debug, PartialEq, Eq, Clone)]
 pub struct FlagClapArgBuilder {
-    name: Option<&'static str>,        // 16 bytes
-    short: Option<char>,               // 4 bytes
-    long: Option<&'static str>,        // 16 bytes
-    description: Option<&'static str>, // 16 bytes
-    action: Option<FlagArgAction>,
+    name: Option<&'static str>,
+    short: Option<char>,
+    long: Option<&'static str>,
+    description: Option<&'static str>,
+    action: Option<FlagAction>,
     state: u8,
-} // 80 bytes
+}
 
 mod builder_state {
     pub const NAME: usize = 0b1;
