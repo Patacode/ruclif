@@ -77,7 +77,7 @@ impl FlagClapArgBuilder {
         ];
 
         let missing_fields: Vec<&str> = map.iter().filter_map(|entry| entry.1.then_some(entry.0)).collect();
-    
+
         error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", &missing_fields.join(", "))
     }
 }
