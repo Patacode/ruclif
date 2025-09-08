@@ -58,7 +58,6 @@ mod into {
                     .action(test_data.action());
                 let actual: Arg = (&arg).into();
 
-                let is_action_set_false = matches!(actual.get_action(), ArgAction::SetFalse);
                 assert_that(&actual.get_id()).named("id").is_equal_to(expected.get_id());
                 assert_that(&actual.get_short())
                     .named("short")
@@ -69,7 +68,7 @@ mod into {
                 assert_that(&actual.get_help())
                     .named("help")
                     .is_equal_to(expected.get_help());
-                assert_that(&is_action_set_false).named("action").is_true();
+                assert_that(&matches!(actual.get_action(), ArgAction::SetFalse)).named("action").is_true();
             }
 
             #[rstest]
