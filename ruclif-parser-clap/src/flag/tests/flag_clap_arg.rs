@@ -1,3 +1,5 @@
+use std::ffi::OsString;
+
 use clap::{Arg, ArgAction, Command};
 use rstest::*;
 use ruclif_core::{
@@ -6,7 +8,7 @@ use ruclif_core::{
 };
 use speculoos::{assert_that, prelude::BooleanAssertions};
 
-use crate::flag::{tests::director::TestData, FlagArgAction, FlagClapArg, FlagClapArgBuilder};
+use crate::flag::{tests::director::TestData, FlagAction, FlagClapArg, FlagClapArgBuilder};
 
 mod builder {
     use super::*;
@@ -116,47 +118,90 @@ mod into_from {
         use super::*;
 
         mod it_convert_into_bool_from_arg_matches {
-
-            use std::ffi::OsString;
-
             use super::*;
 
-            #[rstest]
-            fn when_flag_given(test_data: TestData) {
-                let arg = FlagClapArgBuilder::default()
-                    .name(test_data.name())
-                    .short(test_data.short())
-                    .long(test_data.long())
-                    .description(test_data.description())
-                    .action(FlagArgAction::SetTrue)
-                    .build()
-                    .unwrap();
+            mod with_set_true_action {
+                use super::*;
 
-                let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
-                let arg_matches = cli_parser.get_matches_from(vec!["--author"]);
+                #[rstest]
+                fn when_flag_given(test_data: TestData) {
+                    let arg = FlagClapArgBuilder::default()
+                        .name(test_data.name())
+                        .short(test_data.short())
+                        .long(test_data.long())
+                        .description(test_data.description())
+                        .action(FlagAction::SetTrue)
+                        .build()
+                        .unwrap();
 
-                let actual = arg.into_from(&arg_matches);
+                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches = cli_parser.get_matches_from(vec!["--author"]);
 
-                assert_that(&actual).is_true();
+                    let actual = arg.into_from(&arg_matches);
+
+                    assert_that(&actual).is_true();
+                }
+
+                #[rstest]
+                fn when_no_flag_given(test_data: TestData) {
+                    let arg = FlagClapArgBuilder::default()
+                        .name(test_data.name())
+                        .short(test_data.short())
+                        .long(test_data.long())
+                        .description(test_data.description())
+                        .action(FlagAction::SetTrue)
+                        .build()
+                        .unwrap();
+
+                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches = cli_parser.get_matches_from::<Vec<OsString>, OsString>(vec![]);
+
+                    let actual = arg.into_from(&arg_matches);
+
+                    assert_that(&actual).is_false();
+                }
             }
 
-            #[rstest]
-            fn when_no_flag_given(test_data: TestData) {
-                let arg = FlagClapArgBuilder::default()
-                    .name(test_data.name())
-                    .short(test_data.short())
-                    .long(test_data.long())
-                    .description(test_data.description())
+            mod with_set_false_action {
+                use super::*;
 
-                    .build()
-                    .unwrap();
+                #[rstest]
+                fn when_flag_given(test_data: TestData) {
+                    let arg = FlagClapArgBuilder::default()
+                        .name(test_data.name())
+                        .short(test_data.short())
+                        .long(test_data.long())
+                        .description(test_data.description())
+                        .action(FlagAction::SetFalse)
+                        .build()
+                        .unwrap();
 
-                let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
-                let arg_matches = cli_parser.get_matches_from::<Vec<OsString>, OsString>(vec![]);
+                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches = cli_parser.get_matches_from(vec!["--author"]);
 
-                let actual = arg.into_from(&arg_matches);
+                    let actual = arg.into_from(&arg_matches);
 
-                assert_that(&actual).is_false();
+                    assert_that(&actual).is_false();
+                }
+
+                #[rstest]
+                fn when_no_flag_given(test_data: TestData) {
+                    let arg = FlagClapArgBuilder::default()
+                        .name(test_data.name())
+                        .short(test_data.short())
+                        .long(test_data.long())
+                        .description(test_data.description())
+                        .action(FlagAction::SetFalse)
+                        .build()
+                        .unwrap();
+
+                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches = cli_parser.get_matches_from::<Vec<OsString>, OsString>(vec![]);
+
+                    let actual = arg.into_from(&arg_matches);
+
+                    assert_that(&actual).is_true();
+                }
             }
         }
     }

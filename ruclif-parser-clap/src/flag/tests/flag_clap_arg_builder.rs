@@ -5,9 +5,9 @@ use speculoos::{assert_that, result::ContainingResultAssertions};
 use crate::{
     flag::{
         tests::director::{defaults, TestData},
-        FlagArgAction, FlagClapArg, FlagClapArgBuilder, FlagClapArgData,
+        FlagAction, FlagClapArg, FlagClapArgBuilder, FlagClapArgData,
     },
-    ClapArgData,
+    ClapNamedArgData,
 };
 
 mod build {
@@ -28,13 +28,13 @@ mod build {
             fn when_all_fields_set(test_data: TestData) {
                 let expected = FlagClapArg {
                     data: FlagClapArgData {
-                        common: ClapArgData {
+                        common: ClapNamedArgData {
                             name: defaults::NAME,
                             short: defaults::SHORT,
                             long: defaults::LONG,
                             description: defaults::DESCRIPTION,
                         },
-                        action: FlagArgAction::SetFalse,
+                        action: FlagAction::SetFalse,
                     },
                 };
                 let actual = FlagClapArgBuilder::default()
@@ -42,7 +42,7 @@ mod build {
                     .short(test_data.short())
                     .long(test_data.long())
                     .description(test_data.description())
-                    .action(FlagArgAction::SetFalse)
+                    .action(test_data.action().clone())
                     .build();
 
                 assert_that(&actual).is_ok_containing(expected);
@@ -52,13 +52,13 @@ mod build {
             fn when_no_action(test_data: TestData) {
                 let expected = FlagClapArg {
                     data: FlagClapArgData {
-                        common: ClapArgData {
+                        common: ClapNamedArgData {
                             name: defaults::NAME,
                             short: defaults::SHORT,
                             long: defaults::LONG,
                             description: defaults::DESCRIPTION,
                         },
-                        action: FlagArgAction::SetTrue,
+                        action: FlagAction::SetTrue,
                     },
                 };
                 let actual = FlagClapArgBuilder::default()
