@@ -8,8 +8,8 @@ use ruclif_core::{
 };
 
 use crate::{
-    flag::{builder_state, error_message, FlagArgAction, FlagClapArg, FlagClapArgBuilder, FlagClapArgData},
-    ClapArgData,
+    flag::{builder_state, error_message, FlagAction, FlagClapArg, FlagClapArgBuilder, FlagClapArgData},
+    ClapNamedArgData,
 };
 
 impl HasBuilder for FlagClapArg {
@@ -45,7 +45,7 @@ impl FlagClapArgBuilder {
         self
     }
 
-    pub fn action(mut self, action: FlagArgAction) -> Self {
+    pub fn action(mut self, action: FlagAction) -> Self {
         self.action = Some(action);
         self
     }
@@ -67,6 +67,19 @@ impl FlagClapArgBuilder {
     fn is_description_set(&self) -> bool {
         self.state & builder_state::DESCRIPTION as u8 != 0
     }
+
+    fn build_error_message(&self) -> String {
+        let map = [
+            ("name", !self.is_name_set()),
+            ("short", !self.is_short_set()),
+            ("long", !self.is_long_set()),
+            ("description", !self.is_description_set()),
+        ];
+
+        let missing_fields: Vec<&str> = map.iter().filter_map(|entry| entry.1.then_some(entry.0)).collect();
+    
+        error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", &missing_fields.join(", "))
+    }
 }
 
 impl Builder for FlagClapArgBuilder {
@@ -74,25 +87,16 @@ impl Builder for FlagClapArgBuilder {
 
     fn build(self) -> Result<FlagClapArg, String> {
         if self.state != builder_state::EXPECTED {
-            let map = [
-                ("name", !self.is_name_set()),
-                ("short", !self.is_short_set()),
-                ("long", !self.is_long_set()),
-                ("description", !self.is_description_set()),
-            ];
-
-            let missing_fields: Vec<&str> = map.iter().filter_map(|entry| entry.1.then_some(entry.0)).collect();
-
-            Err(error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", &missing_fields.join(", ")))
+            Err(self.build_error_message())
         } else {
             let data = FlagClapArgData {
-                common: ClapArgData {
+                common: ClapNamedArgData {
                     name: self.name.unwrap(),
                     short: self.short.unwrap(),
                     long: self.long.unwrap(),
                     description: self.description.unwrap(),
                 },
-                action: self.action.unwrap_or(FlagArgAction::SetTrue),
+                action: self.action.unwrap_or(FlagAction::SetTrue),
             };
 
             Ok(FlagClapArg { data })
@@ -117,16 +121,16 @@ impl FlagClapArg {
         self.data.common.description
     }
 
-    fn action(&self) -> &FlagArgAction {
+    fn action(&self) -> &FlagAction {
         &self.data.action
     }
 }
 
-impl IntoResettable<ArgAction> for &FlagArgAction {
+impl IntoResettable<ArgAction> for &FlagAction {
     fn into_resettable(self) -> Resettable<ArgAction> {
         match self {
-            FlagArgAction::SetTrue => Resettable::Value(ArgAction::SetTrue),
-            FlagArgAction::SetFalse => Resettable::Value(ArgAction::SetFalse),
+            FlagAction::SetTrue => Resettable::Value(ArgAction::SetTrue),
+            FlagAction::SetFalse => Resettable::Value(ArgAction::SetFalse),
         }
     }
 }
