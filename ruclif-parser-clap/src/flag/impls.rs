@@ -1,16 +1,19 @@
-use clap::{
-    builder::{IntoResettable, Resettable},
-    Arg, ArgAction, ArgMatches,
-};
-use ruclif_core::{
-    builder::{Builder, HasBuilder},
-    common::IntoFrom,
-};
+use clap::builder::IntoResettable;
+use clap::builder::Resettable;
+use clap::Arg;
+use clap::ArgAction;
+use clap::ArgMatches;
+use ruclif_core::builder::Builder;
+use ruclif_core::builder::HasBuilder;
+use ruclif_core::common::IntoFrom;
 
-use crate::{
-    flag::{builder_state, error_message, FlagAction, FlagClapArg, FlagClapArgBuilder, FlagClapArgData},
-    ClapNamedArgData,
-};
+use crate::flag::builder_state;
+use crate::flag::error_message;
+use crate::flag::FlagAction;
+use crate::flag::FlagClapArg;
+use crate::flag::FlagClapArgBuilder;
+use crate::flag::FlagClapArgData;
+use crate::ClapNamedArgData;
 
 impl HasBuilder for FlagClapArg {
     type Builder = FlagClapArgBuilder;
@@ -76,9 +79,13 @@ impl FlagClapArgBuilder {
             ("description", !self.is_description_set()),
         ];
 
-        let missing_fields: Vec<&str> = map.iter().filter_map(|entry| entry.1.then_some(entry.0)).collect();
+        let missing_fields: Vec<&str> = map
+            .iter()
+            .filter_map(|entry| entry.1.then_some(entry.0))
+            .collect();
 
-        error_message::MANDATORY_FIELDS_MISSING.replace("{fields}", &missing_fields.join(", "))
+        error_message::MANDATORY_FIELDS_MISSING
+            .replace("{fields}", &missing_fields.join(", "))
     }
 }
 
