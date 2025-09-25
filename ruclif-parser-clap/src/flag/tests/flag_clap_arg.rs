@@ -119,7 +119,7 @@ mod into {
     }
 }
 
-mod into_from {
+mod from_into {
     use super::*;
 
     #[fixture]
@@ -152,7 +152,7 @@ mod into_from {
                     let arg_matches =
                         cli_parser.get_matches_from(vec!["--author"]);
 
-                    let actual = arg.into_from(&arg_matches);
+                    let actual = arg.from_into(&arg_matches);
 
                     assert_that(&actual).is_true();
                 }
@@ -173,7 +173,7 @@ mod into_from {
                     let arg_matches = cli_parser
                         .get_matches_from::<Vec<OsString>, OsString>(vec![]);
 
-                    let actual = arg.into_from(&arg_matches);
+                    let actual = arg.from_into(&arg_matches);
 
                     assert_that(&actual).is_false();
                 }
@@ -198,7 +198,7 @@ mod into_from {
                     let arg_matches =
                         cli_parser.get_matches_from(vec!["--author"]);
 
-                    let actual = arg.into_from(&arg_matches);
+                    let actual = arg.from_into(&arg_matches);
 
                     assert_that(&actual).is_false();
                 }
@@ -219,7 +219,7 @@ mod into_from {
                     let arg_matches = cli_parser
                         .get_matches_from::<Vec<OsString>, OsString>(vec![]);
 
-                    let actual = arg.into_from(&arg_matches);
+                    let actual = arg.from_into(&arg_matches);
 
                     assert_that(&actual).is_true();
                 }

@@ -148,7 +148,7 @@ impl From<&Arg> for clap::Arg {
 }
 
 impl FromInto<&ArgMatches, bool> for Arg {
-    fn into_from(self, parsing_result: &ArgMatches) -> bool {
+    fn from_into(self, parsing_result: &ArgMatches) -> bool {
         parsing_result.get_flag(self.name())
     }
 }

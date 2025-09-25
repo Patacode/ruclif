@@ -1,3 +1,3 @@
 pub trait FromInto<I, O>: Sized {
-    fn into_from(self, arg: I) -> O;
+    fn from_into(self, arg: I) -> O;
 }

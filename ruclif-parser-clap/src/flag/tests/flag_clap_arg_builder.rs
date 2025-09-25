@@ -240,7 +240,7 @@ mod build {
             fn when_no_name_short_description(test_data: TestData) {
                 let expected = String::from(
                     "Following mandatory fields are missing: name, short, \
-                    description"
+                    description",
                 );
                 let actual = ArgBuilder::default()
                     .long(test_data.long())
@@ -254,7 +254,7 @@ mod build {
             fn when_no_name_long_description(test_data: TestData) {
                 let expected = String::from(
                     "Following mandatory fields are missing: name, long, \
-                    description"
+                    description",
                 );
                 let actual = ArgBuilder::default()
                     .short(test_data.short())
@@ -268,7 +268,7 @@ mod build {
             fn when_no_short_long_description(test_data: TestData) {
                 let expected = String::from(
                     "Following mandatory fields are missing: short, long, \
-                    description"
+                    description",
                 );
                 let actual = ArgBuilder::default()
                     .name(test_data.name())
@@ -282,7 +282,7 @@ mod build {
             fn when_all_mandatory_fields_unset(test_data: TestData) {
                 let expected = String::from(
                     "Following mandatory fields are missing: name, short, \
-                    long, description"
+                    long, description",
                 );
                 let actual = ArgBuilder::default()
                     .action(test_data.action().clone())
