@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "exemptors",
         "impls",
         "Patacode",
         "rstest",
@@ -10,6 +11,6 @@
         "ruclif-parser-clap"
     ],
     "editor.rulers": [
-        120
+        80
     ]
 }
