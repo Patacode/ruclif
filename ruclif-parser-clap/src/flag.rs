@@ -1,4 +1,5 @@
-use crate::ClapNamedArgData;
+use crate::ArgBuilderData;
+use crate::NamedArgData;
 
 mod impls;
 
@@ -6,42 +7,30 @@ mod impls;
 mod tests;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub enum FlagAction {
+pub enum Action {
     SetTrue,
     SetFalse,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct FlagClapArgData {
-    common: ClapNamedArgData,
-    action: FlagAction,
+pub struct ArgData {
+    common: NamedArgData,
+    action: Action,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct FlagClapArg {
-    data: FlagClapArgData,
+pub struct Arg {
+    data: ArgData,
 }
 
 #[rustfmt::skip]
 #[derive(Default, Debug, PartialEq, Eq, Clone)]
-pub struct FlagClapArgBuilder {
-    name:        Option<&'static str>,
-    short:       Option<char>,
-    long:        Option<&'static str>,
-    description: Option<&'static str>,
-    action:      Option<FlagAction>,
-    state:       u8,
+pub struct ArgBuilder {
+    common: ArgBuilderData,
+    action: Option<Action>,
+    state:  u8,
 }
 
-#[rustfmt::skip]
-mod builder_state {
-    pub const NAME:        usize = 0b0001;
-    pub const SHORT:       usize = 0b0010;
-    pub const LONG:        usize = 0b0100;
-    pub const DESCRIPTION: usize = 0b1000;
-    pub const EXPECTED:    u8    = 0b1111;
-}
-
-mod error_message {
-    pub const MANDATORY_FIELDS_MISSING: &str = "Following mandatory fields are missing: {fields}";
+mod arg_builder_state {
+    pub use crate::common_arg_builder_state::*;
 }

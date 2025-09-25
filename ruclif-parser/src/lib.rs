@@ -1,6 +1,7 @@
 use ruclif_core::builder::HasBuilder;
-use ruclif_parser_clap::flag::{FlagClapArg, FlagClapArgBuilder};
+use ruclif_parser_clap::flag::Arg;
+use ruclif_parser_clap::flag::ArgBuilder;
 
-pub fn create_flag_arg() -> FlagClapArgBuilder {
-    FlagClapArg::builder()
+pub fn create_flag_arg() -> ArgBuilder {
+    Arg::builder()
 }

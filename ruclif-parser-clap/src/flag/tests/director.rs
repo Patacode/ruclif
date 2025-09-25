@@ -1,7 +1,6 @@
-use crate::{
-    flag::{FlagAction, FlagClapArgData},
-    ClapNamedArgData,
-};
+use crate::flag::Action;
+use crate::flag::ArgData;
+use crate::NamedArgData;
 
 pub mod defaults {
     use super::*;
@@ -10,11 +9,11 @@ pub mod defaults {
     pub const SHORT: char = 'a';
     pub const LONG: &str = "author";
     pub const DESCRIPTION: &str = "Print author";
-    pub const ACTION: FlagAction = FlagAction::SetFalse;
+    pub const ACTION: Action = Action::SetFalse;
 }
 
 pub struct TestData {
-    arg_data: FlagClapArgData,
+    arg_data: ArgData,
 }
 
 impl TestData {
@@ -34,7 +33,7 @@ impl TestData {
         self.arg_data.common.description
     }
 
-    pub fn action(&self) -> &FlagAction {
+    pub fn action(&self) -> &Action {
         &self.arg_data.action
     }
 }
@@ -42,8 +41,8 @@ impl TestData {
 impl TestData {
     pub fn with_all_fields_set() -> Self {
         Self {
-            arg_data: FlagClapArgData {
-                common: ClapNamedArgData {
+            arg_data: ArgData {
+                common: NamedArgData {
                     name: defaults::NAME,
                     short: defaults::SHORT,
                     long: defaults::LONG,

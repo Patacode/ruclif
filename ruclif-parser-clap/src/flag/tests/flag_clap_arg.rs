@@ -1,14 +1,18 @@
 use std::ffi::OsString;
 
-use clap::{Arg, ArgAction, Command};
+use clap::ArgAction;
+use clap::Command;
 use rstest::*;
-use ruclif_core::{
-    builder::{Builder, HasBuilder},
-    common::IntoFrom,
-};
-use speculoos::{assert_that, prelude::BooleanAssertions};
+use ruclif_core::builder::Builder;
+use ruclif_core::builder::HasBuilder;
+use ruclif_core::common::FromInto;
+use speculoos::assert_that;
+use speculoos::prelude::BooleanAssertions;
 
-use crate::flag::{tests::director::TestData, FlagAction, FlagClapArg, FlagClapArgBuilder};
+use crate::flag::tests::director::TestData;
+use crate::flag::Action;
+use crate::flag::Arg;
+use crate::flag::ArgBuilder;
 
 mod builder {
     use super::*;
@@ -18,8 +22,8 @@ mod builder {
 
         #[test]
         fn it_should_return_default_flag_clap_arg_builder_instance() {
-            let expected = FlagClapArgBuilder::default();
-            let actual = FlagClapArg::builder();
+            let expected = ArgBuilder::default();
+            let actual = Arg::builder();
 
             assert_that(&actual).is_equal_to(expected);
         }
@@ -42,7 +46,7 @@ mod into {
 
             #[rstest]
             fn with_all_fields_set(test_data: TestData) {
-                let arg = FlagClapArgBuilder::default()
+                let arg = ArgBuilder::default()
                     .name(test_data.name())
                     .short(test_data.short())
                     .long(test_data.long())
@@ -51,14 +55,16 @@ mod into {
                     .build()
                     .unwrap();
 
-                let expected = Arg::new(test_data.name())
+                let expected = clap::Arg::new(test_data.name())
                     .short(test_data.short())
                     .long(test_data.long())
                     .help(test_data.description())
                     .action(test_data.action());
-                let actual: Arg = (&arg).into();
+                let actual: clap::Arg = (&arg).into();
 
-                assert_that(&actual.get_id()).named("id").is_equal_to(expected.get_id());
+                assert_that(&actual.get_id())
+                    .named("id")
+                    .is_equal_to(expected.get_id());
                 assert_that(&actual.get_short())
                     .named("short")
                     .is_equal_to(expected.get_short());
@@ -68,12 +74,17 @@ mod into {
                 assert_that(&actual.get_help())
                     .named("help")
                     .is_equal_to(expected.get_help());
-                assert_that(&matches!(actual.get_action(), ArgAction::SetFalse)).named("action").is_true();
+                assert_that(&matches!(
+                    actual.get_action(),
+                    ArgAction::SetFalse
+                ))
+                .named("action")
+                .is_true();
             }
 
             #[rstest]
             fn with_no_action(test_data: TestData) {
-                let arg = FlagClapArgBuilder::default()
+                let arg = ArgBuilder::default()
                     .name(test_data.name())
                     .short(test_data.short())
                     .long(test_data.long())
@@ -81,15 +92,18 @@ mod into {
                     .build()
                     .unwrap();
 
-                let expected = Arg::new(test_data.name())
+                let expected = clap::Arg::new(test_data.name())
                     .short(test_data.short())
                     .long(test_data.long())
                     .help(test_data.description());
-                let actual: Arg = (&arg).into();
+                let actual: clap::Arg = (&arg).into();
 
-                let is_action_set_true = matches!(actual.get_action(), ArgAction::SetTrue);
+                let is_action_set_true =
+                    matches!(actual.get_action(), ArgAction::SetTrue);
 
-                assert_that(&actual.get_id()).named("id").is_equal_to(expected.get_id());
+                assert_that(&actual.get_id())
+                    .named("id")
+                    .is_equal_to(expected.get_id());
                 assert_that(&actual.get_short())
                     .named("short")
                     .is_equal_to(expected.get_short());
@@ -124,17 +138,19 @@ mod into_from {
 
                 #[rstest]
                 fn when_flag_given(test_data: TestData) {
-                    let arg = FlagClapArgBuilder::default()
+                    let arg = ArgBuilder::default()
                         .name(test_data.name())
                         .short(test_data.short())
                         .long(test_data.long())
                         .description(test_data.description())
-                        .action(FlagAction::SetTrue)
+                        .action(Action::SetTrue)
                         .build()
                         .unwrap();
 
-                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
-                    let arg_matches = cli_parser.get_matches_from(vec!["--author"]);
+                    let cli_parser =
+                        Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches =
+                        cli_parser.get_matches_from(vec!["--author"]);
 
                     let actual = arg.into_from(&arg_matches);
 
@@ -143,17 +159,19 @@ mod into_from {
 
                 #[rstest]
                 fn when_no_flag_given(test_data: TestData) {
-                    let arg = FlagClapArgBuilder::default()
+                    let arg = ArgBuilder::default()
                         .name(test_data.name())
                         .short(test_data.short())
                         .long(test_data.long())
                         .description(test_data.description())
-                        .action(FlagAction::SetTrue)
+                        .action(Action::SetTrue)
                         .build()
                         .unwrap();
 
-                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
-                    let arg_matches = cli_parser.get_matches_from::<Vec<OsString>, OsString>(vec![]);
+                    let cli_parser =
+                        Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches = cli_parser
+                        .get_matches_from::<Vec<OsString>, OsString>(vec![]);
 
                     let actual = arg.into_from(&arg_matches);
 
@@ -166,17 +184,19 @@ mod into_from {
 
                 #[rstest]
                 fn when_flag_given(test_data: TestData) {
-                    let arg = FlagClapArgBuilder::default()
+                    let arg = ArgBuilder::default()
                         .name(test_data.name())
                         .short(test_data.short())
                         .long(test_data.long())
                         .description(test_data.description())
-                        .action(FlagAction::SetFalse)
+                        .action(Action::SetFalse)
                         .build()
                         .unwrap();
 
-                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
-                    let arg_matches = cli_parser.get_matches_from(vec!["--author"]);
+                    let cli_parser =
+                        Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches =
+                        cli_parser.get_matches_from(vec!["--author"]);
 
                     let actual = arg.into_from(&arg_matches);
 
@@ -185,17 +205,19 @@ mod into_from {
 
                 #[rstest]
                 fn when_no_flag_given(test_data: TestData) {
-                    let arg = FlagClapArgBuilder::default()
+                    let arg = ArgBuilder::default()
                         .name(test_data.name())
                         .short(test_data.short())
                         .long(test_data.long())
                         .description(test_data.description())
-                        .action(FlagAction::SetFalse)
+                        .action(Action::SetFalse)
                         .build()
                         .unwrap();
 
-                    let cli_parser = Command::new("test").no_binary_name(true).arg(&arg);
-                    let arg_matches = cli_parser.get_matches_from::<Vec<OsString>, OsString>(vec![]);
+                    let cli_parser =
+                        Command::new("test").no_binary_name(true).arg(&arg);
+                    let arg_matches = cli_parser
+                        .get_matches_from::<Vec<OsString>, OsString>(vec![]);
 
                     let actual = arg.into_from(&arg_matches);
 
